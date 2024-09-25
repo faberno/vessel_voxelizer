@@ -2,11 +2,11 @@ import numpy as np
 import cupy as cp
 import vessel_voxelizer as vv
 import matplotlib.pyplot as plt
-
+import os
 def main():
 
     # read the vessel data
-    vessel_positions, vessel_radii, vessel_bounds = vv.load_vessels("files/example_vessels.csv")
+    vessel_positions, vessel_radii, vessel_bounds = vv.load_vessels(os.path.abspath("../files/example_vessels.csv"))
 
     # define the voxel grid
     volume_spacing = 0.01
