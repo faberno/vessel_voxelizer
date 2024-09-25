@@ -7,7 +7,7 @@ README Template from: https://github.com/othneildrew/Best-README-Template
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a>
     <img src="files/logo.svg" alt="Logo" width="80" height="80">
   </a>
 
@@ -63,15 +63,22 @@ README Template from: https://github.com/othneildrew/Best-README-Template
 
 ### Installation
 
+- install cupy based on your CUDA version
+```bash
+# for CUDA 11.x
+pip install cupy-cuda11x
+
+# for CUDA 12.x
+pip install cupy-cuda12x
+```
+
+- compile and install the package
+```bash
+pip install .
+```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- LICENSE -->
