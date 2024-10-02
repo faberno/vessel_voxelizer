@@ -15,15 +15,12 @@ README Template from: https://github.com/othneildrew/Best-README-Template
 
   <p align="center">
     GPU accelerated (fuzzy) voxelization of vascular structures
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <br /><br />
+    <a href="example/example.ipynb">Demo</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/faberno/vessel_voxelizer/issues">Report Bug / Request Feature</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/faberno/vessel_voxelizer/issues">Documentation</a>
   </p>
 </div>
 
@@ -43,9 +40,15 @@ README Template from: https://github.com/othneildrew/Best-README-Template
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li>
+      <a href="#documentation">Documentation</a>
+      <ul>
+        <li><a href="#how it works">How it works</a></li>
+        <li><a href="#API">Installation</a></li>
+        <li><a href="#API">Example</a></li>
+      </ul>
+    </li>
     <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
@@ -54,16 +57,24 @@ README Template from: https://github.com/othneildrew/Best-README-Template
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-
+**vessel-voxelizer** is a CUDA-accelerated tool designed to convert vascular structures, defined by line segments with associated radii, into fuzzy voxel volumes, where
+each voxel's value represents the fraction of its volume occupied by the vessels. This fuzzy representation is essential for simulations where the volume fraction plays 
+a critical role in assigning the correct parameters to each voxel, ensuring precise modeling of e.g. physical processes. 
+The project leverages CUDA for high performance and includes Python bindings for seamless integration into existing simulation workflows.
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
 ### Prerequisites
+- a CUDA-capable GPU
 
 ### Installation
-
-- install cupy based on your CUDA version
+1) clone the repository and update the nanobind submodule
+```bash
+git clone https://github.com/faberno/vessel_voxelizer.git
+git submodule update --init --recursive
+```
+2) install cupy based on your CUDA version
 ```bash
 # for CUDA 11.x
 pip install cupy-cuda11x
@@ -71,15 +82,27 @@ pip install cupy-cuda11x
 # for CUDA 12.x
 pip install cupy-cuda12x
 ```
-
-- compile and install the package
+3) compile and install the library
 ```bash
 pip install .
 ```
 
 <!-- USAGE EXAMPLES -->
-## Usage
+## Documentation
 
+### How it works
+
+<div align="center">
+  <a>
+    <img src="files/vessel_fig.svg" alt="Logo" height="300">
+  </a>
+</div>
+
+
+### API
+
+### Example
+For a full example, take a look at the following [notebook](example/example.ipynb).
 
 <!-- LICENSE -->
 ## License
@@ -87,11 +110,6 @@ pip install .
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## Contact
 
 
 <!-- ACKNOWLEDGMENTS -->
