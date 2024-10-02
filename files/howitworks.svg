@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.5"
-     inkscape:cx="1439"
-     inkscape:cy="353"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="621.19331"
+     inkscape:cy="315.01607"
      inkscape:window-width="2560"
      inkscape:window-height="1369"
      inkscape:window-x="-8"
@@ -216,17 +216,17 @@
        style="font-size:26.6667px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';white-space:pre;shape-inside:url(#rect17);display:inline;fill:#f9f9f9;stroke:#000000;stroke-width:0.506457;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"><tspan
          x="49.283203"
          y="357.23346"
-         id="tspan14"><tspan
+         id="tspan6"><tspan
            style="fill:#000000"
-           id="tspan9">(x</tspan><tspan
+           id="tspan1">(x</tspan><tspan
            style="font-size:13.3333px;baseline-shift:sub"
-           id="tspan10">0</tspan><tspan
+           id="tspan2">0</tspan><tspan
            style="fill:#000000"
-           id="tspan11">, y</tspan><tspan
+           id="tspan3">, y</tspan><tspan
            style="font-size:13.3333px;baseline-shift:sub"
-           id="tspan12">0</tspan><tspan
+           id="tspan4">0</tspan><tspan
            style="fill:#000000"
-           id="tspan13">)</tspan></tspan></text>
+           id="tspan5">)</tspan></tspan></text>
     <path
        style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.683425;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        d="m 21.528664,131.56847 2.78472,-2.7847"
@@ -246,9 +246,9 @@
        style="font-size:26.6667px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';white-space:pre;shape-inside:url(#rect28);display:inline;fill:#f9f9f9;stroke:#000000;stroke-width:0.506457;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"><tspan
          x="49.283203"
          y="357.23346"
-         id="tspan16"><tspan
+         id="tspan8"><tspan
            style="fill:#000000"
-           id="tspan15">d</tspan></tspan></text>
+           id="tspan7">d</tspan></tspan></text>
     <path
        style="fill:#f9f9f9;stroke:#000000;stroke-width:0.169998;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
        d="m 38.495689,126.55864 1.906892,-0.30187"
@@ -2199,14 +2199,14 @@
        r="0.44879937"
        transform="rotate(-19.948209)" />
     <circle
-       style="fill:#000000;fill-opacity:0.346939;stroke:#ff0000;stroke-width:0.609;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:0.346939;stroke:none;stroke-width:0.609;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="circle1161"
        cx="194.08461"
        cy="117.9552"
        r="0.44879937"
        transform="rotate(-19.948209)" />
     <circle
-       style="fill:#000000;fill-opacity:0.346939;stroke:#ff0000;stroke-width:0.609;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:0.346939;stroke:none;stroke-width:0.609;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="circle1162"
        cx="197.86964"
        cy="119.32896"
@@ -2255,21 +2255,21 @@
        r="0.44879937"
        transform="rotate(-19.948209)" />
     <circle
-       style="fill:#000000;fill-opacity:0.346939;stroke:#ff0000;stroke-width:0.609;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:0.346939;stroke:none;stroke-width:0.609;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="circle1169"
        cx="202.09023"
        cy="120.86063"
        r="0.44879937"
        transform="rotate(-19.948209)" />
     <circle
-       style="fill:#000000;fill-opacity:0.346939;stroke:#ff0000;stroke-width:0.609;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:0.346939;stroke:none;stroke-width:0.609;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="circle1170"
        cx="205.87523"
        cy="122.23436"
        r="0.44879937"
        transform="rotate(-19.948209)" />
     <circle
-       style="fill:#000000;fill-opacity:0.346939;stroke:#ff0000;stroke-width:0.609;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:0.346939;stroke:none;stroke-width:0.609;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        id="circle1171"
        cx="209.66026"
        cy="123.60812"
