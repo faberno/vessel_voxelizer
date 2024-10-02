@@ -94,7 +94,7 @@ pip install .
 
 <div align="center">
   <a>
-    <img src="files/vessel_fig.svg" alt="Logo" height="300">
+    <img src="files/howitworks.svg" alt="how_it_works" height="300">
   </a>
 </div>
 
