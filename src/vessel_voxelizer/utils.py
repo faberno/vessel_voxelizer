@@ -26,10 +26,4 @@ def load_vessels(path):
             vessel_radii[i_vessel] = radii[i]
             i_vessel += 1
 
-    # compute the bounding boxes of the vessels
-    vessel_bounds = np.sort(vessel_positions, axis=1) + np.hstack(
-        (-vessel_radii.reshape(-1, 1, 1),
-         vessel_radii.reshape(-1, 1, 1))
-    )
-
-    return vessel_positions, vessel_radii, vessel_bounds
+    return vessel_positions, vessel_radii
