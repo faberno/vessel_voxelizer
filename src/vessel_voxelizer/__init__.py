@@ -14,4 +14,4 @@ def voxelize(volume: cp.ndarray, volume_start: cp.ndarray, volume_spacing: float
          vessel_radii.reshape(-1, 1, 1))
     )
 
-    return _voxelize(volume, volume_start, volume_spacing, vessel_positions, vessel_bounds, vessel_radii)
+    _voxelize(volume, volume_start, volume_spacing, vessel_positions, vessel_bounds, vessel_radii)
