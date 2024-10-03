@@ -3,9 +3,6 @@ name: Wheels
 on:
   workflow_dispatch:
   pull_request:
-  push:
-    branches:
-     - main
   release:
     types:
       - published
@@ -37,50 +34,104 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-12, macos-14, windows-latest]
+        os: [windows-latest]
 
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: true
+    - run: git submodule update --init --recursive
 
-    - uses: pypa/cibuildwheel@v2.19
+    - name: Fetch CUDA toolkit
+      uses: Jimver/cuda-toolkit@v0.2.17
+      id: cuda-toolkit
+      with:
+        cuda: '12.5.0'
+        linux-local-args: '["--toolkit"]'
+        method: 'network'
+        sub-packages: '["nvcc", "visual_studio_integration", "cudart"]'
+      
+    - name: Setup CUDA
+      run: |
+        echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
+        $CUDA_PATH=Get-ChildItem "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA" -filter "v*.*" -Directory | % { $_.fullname }
+        echo "CUDA_PATH=$CUDA_PATH"
+        echo "CUDA_PATH=$CUDA_PATH" >> $env:GITHUB_ENV
+        echo "CUDA_TOOLKIT_ROOT_DIR=$CUDA_PATH" >> $env:GITHUB_ENV
+        nvcc -V
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
 
-    - name: Verify clean directory
-      run: git diff --exit-code
-      shell: bash
+    - name: Build release distributions
+      run: |
+        python -m pip install build
+        python -m build
 
-    - name: Upload wheels
+    - name: Upload distributions
       uses: actions/upload-artifact@v4
       with:
-        path: wheelhouse/*.whl
-        name: dist-${{ matrix.os }}
+        name: release-dists
+        path: dist/
 
-  merge_wheels:
-    name: Merge wheels into a combined artifact
+
+  pypi-publish:
     runs-on: ubuntu-latest
-    needs: [build_wheels, build_sdist]
+    
+    needs:
+      - build_wheels
+
+    permissions:
+      id-token: write
+
+    environment:
+      name: pypi
+      url: https://pypi.org/project/vessel_voxelizer
+
     steps:
-      - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@v4
+      - name: Retrieve release distributions
+        uses: actions/download-artifact@v4
         with:
-          name: dist
-          pattern: dist-*
+          name: release-dists
+          path: dist/
 
-  upload_all:
-    name: Upload if release
-    needs: merge_wheels
-    runs-on: ubuntu-latest
-    if: github.event_name == 'release' && github.event.action == 'published'
+      - name: Publish release distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1    
+    # - name: Verify clean directory
+    #   run: git diff --exit-code
+    #   shell: bash
 
-    steps:
-    - uses: actions/setup-python@v5
+    # - name: Upload wheels
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     path: wheelhouse/*.whl
+    #     name: dist-${{ matrix.os }}
 
-    - uses: actions/download-artifact@v4
-      with:
-        path: dist
+  # merge_wheels:
+  #   name: Merge wheels into a combined artifact
+  #   runs-on: ubuntu-latest
+  #   needs: [build_wheels, build_sdist]
+  #   steps:
+  #     - name: Merge Artifacts
+  #       uses: actions/upload-artifact/merge@v4
+  #       with:
+  #         name: dist
+  #         pattern: dist-*
 
-    - uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.pypi_password }}
+  # upload_all:
+  #   name: Upload if release
+  #   needs: merge_wheels
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'release' && github.event.action == 'published'
+
+  #   steps:
+  #   - uses: actions/setup-python@v5
+
+  #   - uses: actions/download-artifact@v4
+  #     with:
+  #       path: dist
+
+  #   - uses: pypa/gh-action-pypi-publish@release/v1
+  #     with:
+  #       user: __token__
+  #       password: ${{ secrets.pypi_password }}

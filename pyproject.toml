@@ -11,9 +11,6 @@ requires-python = ">=3.8"
 authors = [
     { name = "Fabian Schneider", email = "fabianschneider2609@gmail.com" },
 ]
-classifiers = [
-    "License :: MIT",
-]
 
 dependencies = [ "numpy",
                  "pandas",
