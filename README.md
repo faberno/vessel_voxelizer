@@ -8,7 +8,7 @@ README Template from: https://github.com/othneildrew/Best-README-Template
 <br />
 <div align="center">
   <a>
-    <img src="files/logo.svg" alt="Logo" width="1000" height="100">
+    <img src="https://github.com/faberno/vessel_voxelizer/blob/main/files/logo.svg" alt="Logo" width="1000" height="100">
   </a>
 
   <h3 align="center">Vessel Voxelizer</h3>
