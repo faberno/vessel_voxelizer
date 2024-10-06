@@ -76,7 +76,6 @@ pip install vessel_voxelizer
 or clone the repository and update the nanobind submodule
 ```bash
 git clone https://github.com/faberno/vessel_voxelizer.git
-git submodule update --init --recursive
 cd vessel_voxelizer
 pip install .
 ```
