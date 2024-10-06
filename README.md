@@ -107,6 +107,8 @@ The voxelization is run by the function `voxelize`. It requires:
 - `vessel_positions`: list of all vessel segments ((p0, p1), ...)
 - `vessel_radii`: list of all vessel radii
 
+The array parameters should lie on the GPU, either as a `cupy.ndarray` or `torch.Tensor`.
+
 ### Example
 For a full example, take a look at the following [notebook](example/example.ipynb).
 
