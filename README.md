@@ -57,7 +57,7 @@ README Template from: https://github.com/othneildrew/Best-README-Template
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-**vessel-voxelizer** is a CUDA-accelerated tool designed to convert vascular structures, defined by line segments with associated radii, into fuzzy voxel volumes, where
+`vessel-voxelizer` is a CUDA-accelerated tool designed to convert vascular structures, defined by line segments with associated radii, into fuzzy voxel volumes, where
 each voxel's value represents the fraction of its volume occupied by the vessels. This fuzzy representation is essential for simulations where the volume fraction plays 
 a critical role in assigning the correct parameters to each voxel, ensuring precise modeling of e.g. physical processes. 
 The project leverages CUDA for high performance and includes Python bindings for seamless integration into existing workflows.
@@ -80,18 +80,10 @@ git submodule update --init --recursive
 cd vessel_voxelizer
 pip install .
 ```
-2) install cupy based on your CUDA version
-```bash
-# for CUDA 11.x
-pip install cupy-cuda11x
+2) make sure you have a cuda-capable array library installed (currently cupy and torch are supported)
+- how to install cupy: https://docs.cupy.dev/en/stable/install.html
+- how to install pytorch: https://pytorch.org/get-started/locally/#start-locally
 
-# for CUDA 12.x
-pip install cupy-cuda12x
-```
-3) compile and install the library
-```bash
-pip install .
-```
 
 <!-- USAGE EXAMPLES -->
 ## Documentation
@@ -103,9 +95,17 @@ pip install .
     <img src="files/howitworks.svg" alt="how_it_works" height="300">
   </a>
 </div>
-
+A vessel segment is represented by a startpoint p0, an endpoint p1 and a radius r.
+We determine the value of a voxel by supersampling K<sup>3</sup> points within it and checking how many of those points lie within the radius of the vessel (no points -> 0.0, all points -> 1.0). Currently K is chosen as 10, so 1000 points per voxel are checked.<br>
+To avoid unnecessary checks of voxels that lie far away from any vessel, an initial bounding box intersection check is performed.
 
 ### API
+The voxelization is run by the function `voxelize`. It requires:
+- `volume`: The volume that is written to
+- `volume_origin`: origin coordinates (x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>) of the volume  ( (x<sub>0</sub>, y<sub>0</sub>) in figure)
+- `volume_spacing`: voxel side length (d in figure)
+- `vessel_positions`: list of all vessel segments ((p0, p1), ...)
+- `vessel_radii`: list of all vessel radii
 
 ### Example
 For a full example, take a look at the following [notebook](example/example.ipynb).
@@ -120,5 +120,4 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
-
-
+- the bindings are created using `nanobind` (https://nanobind.readthedocs.io/en/latest/index.html)
