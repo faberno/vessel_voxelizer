@@ -1,13 +1,6 @@
 # Set the minimum CMake version and policies for highest tested version
 cmake_minimum_required(VERSION 3.15...3.27)
 
-# a set(CUDAToolkit_ROOT "/usr/local/cuda-12.5")
-# a set(CMAKE_CUDA_COMPILER "/usr/local/cuda-12.5/bin/nvcc")
-# a set(CUDA_TOOLKIT_ROOT_DIR "/usr/local/cuda-12.5")
-# a set(CUDAToolkit_ROOT "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.5")
-# a set(CMAKE_CUDA_COMPILER "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.5/bin/nvcc")
-# a set(CUDA_TOOLKIT_ROOT_DIR "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.5")
-
 # Set up the project and ensure there is a working C++ compiler
 project(vessel_voxelizer LANGUAGES CXX CUDA)
 
@@ -56,6 +49,6 @@ nanobind_add_module(
   # Source code goes here
   src/vessel_voxelizer.cu
 )
-
+message(CMAKE_PREFIX_PATH ="${CMAKE_PREFIX_PATH}")
 # Install directive for scikit-build-core
 install(TARGETS _vessel_vox LIBRARY DESTINATION vessel_voxelizer)

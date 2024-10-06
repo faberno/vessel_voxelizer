@@ -60,7 +60,7 @@ README Template from: https://github.com/othneildrew/Best-README-Template
 **vessel-voxelizer** is a CUDA-accelerated tool designed to convert vascular structures, defined by line segments with associated radii, into fuzzy voxel volumes, where
 each voxel's value represents the fraction of its volume occupied by the vessels. This fuzzy representation is essential for simulations where the volume fraction plays 
 a critical role in assigning the correct parameters to each voxel, ensuring precise modeling of e.g. physical processes. 
-The project leverages CUDA for high performance and includes Python bindings for seamless integration into existing simulation workflows.
+The project leverages CUDA for high performance and includes Python bindings for seamless integration into existing workflows.
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -69,10 +69,16 @@ The project leverages CUDA for high performance and includes Python bindings for
 - a CUDA-capable GPU
 
 ### Installation
-1) clone the repository and update the nanobind submodule
+1) install from pip 
+```bash
+pip install vessel_voxelizer
+```
+or clone the repository and update the nanobind submodule
 ```bash
 git clone https://github.com/faberno/vessel_voxelizer.git
 git submodule update --init --recursive
+cd vessel_voxelizer
+pip install .
 ```
 2) install cupy based on your CUDA version
 ```bash

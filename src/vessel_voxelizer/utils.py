@@ -3,6 +3,27 @@ import pandas as pd
 
 
 def load_vessels(path):
+    """Read vessel data from csv file.
+
+    The csv should be comma separated with headers
+
+    node_id | x | y | z | radius | parent_id
+
+    and every row describes a vessel segment node.
+    A root should have parent_id=-1.
+
+    Parameters
+    ----------
+    path : str
+        Path of the csv file.
+
+    Parameters
+    ----------
+    np.ndarray
+        Position of vessel segments. Shape (N, 2, 3)
+    np.ndarray
+        Radii of the vessel segments. Shape: (N,)
+    """
     vessels = pd.read_csv(path)
 
     # number of vessel segments

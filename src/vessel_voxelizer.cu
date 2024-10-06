@@ -175,6 +175,6 @@ void voxelize(nb::ndarray<scalar, nb::ndim<3>, nb::device::cuda> volume,
 
 
 NB_MODULE(_vessel_vox, m) {
-    m.def("voxelize", &voxelize<float>);
+    m.def("__voxelize", &voxelize<float>);
 //     m.def("voxelize", &voxelize<double>);
 }
