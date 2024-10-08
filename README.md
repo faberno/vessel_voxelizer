@@ -73,7 +73,7 @@ The project leverages CUDA for high performance and includes Python bindings for
 ```bash
 pip install vessel_voxelizer
 ```
-or clone the repository and update the nanobind submodule
+or clone the repository
 ```bash
 git clone https://github.com/faberno/vessel_voxelizer.git
 cd vessel_voxelizer
@@ -118,6 +118,11 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## TODO
+- add anisometric voxel spacing
+- add prebuilt wheels
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
