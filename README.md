@@ -20,7 +20,7 @@ README Template from: https://github.com/othneildrew/Best-README-Template
     ·
     <a href="https://github.com/faberno/vessel_voxelizer/issues">Report Bug / Request Feature</a>
     ·
-    <a href="https://github.com/faberno/vessel_voxelizer/issues">Documentation</a>
+    <a href="#documentation">Documentation</a>
   </p>
 </div>
 
@@ -94,7 +94,7 @@ pip install .
     <img src="files/howitworks.svg" alt="how_it_works" height="300">
   </a>
 </div>
-A vessel segment is represented by a startpoint p0, an endpoint p1 and a radius r.
+A vessel segment V<sup>i</sup> is represented by a startpoint p<sub>0</sub><sup>i</sup>, an endpoint p<sub>1</sub><sup>i</sup> and a radius r<sup>i</sup>.
 We determine the value of a voxel by supersampling K<sup>3</sup> points within it and checking how many of those points lie within the radius of the vessel (no points -> 0.0, all points -> 1.0). Currently K is chosen as 10, so 1000 points per voxel are checked.<br>
 To avoid unnecessary checks of voxels that lie far away from any vessel, an initial bounding box intersection check is performed.
 
@@ -103,7 +103,7 @@ The voxelization is run by the function `voxelize`. It requires:
 - `volume`: The volume that is written to
 - `volume_origin`: origin coordinates (x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>) of the volume  ( (x<sub>0</sub>, y<sub>0</sub>) in figure)
 - `volume_spacing`: voxel side length (d in figure)
-- `vessel_positions`: list of all vessel segments ((p0, p1), ...)
+- `vessel_positions`: list of all vessel segments ((p<sub>0</sub><sup>0</sup>, p<sub>1</sub><sup>0</sup>), ..., (p<sub>0</sub><sup>N</sup>, p<sub>1</sub><sup>N</sup>))
 - `vessel_radii`: list of all vessel radii
 
 The array parameters should lie on the GPU, either as a `cupy.ndarray` or `torch.Tensor`.
