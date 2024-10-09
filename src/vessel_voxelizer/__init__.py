@@ -6,7 +6,8 @@ from .utils import load_vessels
 
 ndarray = Union["cp.ndarray", "torch.Tensor"]
 
-def voxelize(volume: ndarray, volume_origin: ndarray, volume_spacing: float,
+
+def voxelize(volume: ndarray, volume_origin: ndarray, volume_spacing: Union[ndarray, float],
              vessel_positions: ndarray, vessel_radii: ndarray) -> ndarray:
     """Voxelization of vessel segments.
 
@@ -16,7 +17,7 @@ def voxelize(volume: ndarray, volume_origin: ndarray, volume_spacing: float,
         The volume that the vessels should be written into.
     volume_origin : cp.ndarray, torch.Tensor
         Origin coordinates of the volume (corner of first voxel).
-    volume_spacing : cp.ndarray, torch.Tensor
+    volume_spacing : float, cp.ndarray, torch.Tensor
         Voxel side length.
     vessel_positions : cp.ndarray, torch.Tensor
         Start and end points of the vessels. Shape: (N, 2, 3)
@@ -30,8 +31,14 @@ def voxelize(volume: ndarray, volume_origin: ndarray, volume_spacing: float,
     # compute the bounding boxes of the vessels
     if module == "cupy":
         vessel_bounds = xp.sort(vessel_positions, axis=1)
+
+        if isinstance(volume_spacing, float):
+            volume_spacing = xp.array([volume_spacing, volume_spacing, volume_spacing])
     elif module == "torch":
         vessel_bounds = xp.sort(vessel_positions, axis=1)[0]  # torch.sort returns a tuple
+
+        if isinstance(volume_spacing, float):
+            volume_spacing = xp.tensor([volume_spacing, volume_spacing, volume_spacing], device='cuda')
     else:
         raise NotImplementedError(f"Module {module} is currently not supported."
                                   f"Please open a issue: https://github.com/faberno/vessel_voxelizer/issues")

@@ -119,7 +119,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## TODO
-- add anisometric voxel spacing
+- make number of sample points adaptable
 - add prebuilt wheels
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

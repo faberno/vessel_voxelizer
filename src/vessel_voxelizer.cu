@@ -49,7 +49,7 @@ __device__ scalar sqdist_point_linesegment(const scalar p[3], const scalar ls_st
 template<typename scalar>
 __global__ void voxelize_kernel(scalar* volume,
                                 scalar* volume_start,
-                                scalar vol_spacing,
+                                scalar* vol_spacing,
                                 int n_x, int n_y, int n_z,
                                 const scalar* vessels,
                                 const scalar* vessel_bbox,
@@ -64,15 +64,17 @@ __global__ void voxelize_kernel(scalar* volume,
     if (!(x < n_x && y < n_y && z < n_z)) // thread outside of voxel grid
         return;
 
+    scalar spacing[3] = {vol_spacing[0], vol_spacing[1], vol_spacing[2]};
+
     scalar voxel_min[3] = {
-        volume_start[0] + x * vol_spacing,
-        volume_start[1] + y * vol_spacing,
-        volume_start[2] +z * vol_spacing
+        volume_start[0] + x * spacing[0],
+        volume_start[1] + y * spacing[1],
+        volume_start[2] + z * spacing[2]
     };
     scalar voxel_max[3] = {
-        voxel_min[0] + vol_spacing,
-        voxel_min[1] + vol_spacing,
-        voxel_min[2] + vol_spacing
+        voxel_min[0] + spacing[0],
+        voxel_min[1] + spacing[1],
+        voxel_min[2] + spacing[2]
     };
 
     uint8_t internal_point[K * K * K] = {};
@@ -106,9 +108,9 @@ __global__ void voxelize_kernel(scalar* volume,
         for (int ix = 0; ix < K; ++ix) {
            for (int iy = 0; iy < K; ++iy) {
                for (int iz = 0; iz < K; ++iz) {
-                   check_point[0] = voxel_min[0] + (1.0 / (2 * K) + (1.0 * ix / K)) * vol_spacing;
-                   check_point[1] = voxel_min[1] + (1.0 / (2 * K) + (1.0 * iy / K)) * vol_spacing;
-                   check_point[2] = voxel_min[2] + (1.0 / (2 * K) + (1.0 * iz / K)) * vol_spacing;
+                   check_point[0] = voxel_min[0] + (1.0 / (2 * K) + (1.0 * ix / K)) * spacing[0];
+                   check_point[1] = voxel_min[1] + (1.0 / (2 * K) + (1.0 * iy / K)) * spacing[1];
+                   check_point[2] = voxel_min[2] + (1.0 / (2 * K) + (1.0 * iz / K)) * spacing[2];
 
                    dist_squared = sqdist_point_linesegment(check_point, ls_start, ls_end);
                    if (dist_squared <= (radius * radius)) {
@@ -131,7 +133,7 @@ __global__ void voxelize_kernel(scalar* volume,
 template<typename scalar>
 void voxelize(nb::ndarray<scalar, nb::ndim<3>, nb::device::cuda> volume,
               nb::ndarray<scalar, nb::shape<3>, nb::device::cuda> volume_start,
-              scalar vol_spacing,
+              nb::ndarray<scalar, nb::shape<3>, nb::device::cuda> vol_spacing,
               nb::ndarray<scalar, nb::shape<-1, 2, 3>, nb::c_contig, nb::device::cuda> vessels,
               nb::ndarray<scalar, nb::shape<-1, 2, 3>, nb::c_contig, nb::device::cuda> vessel_bbox,
               nb::ndarray<scalar, nb::shape<-1>, nb::c_contig, nb::device::cuda> rads) {
@@ -150,7 +152,6 @@ void voxelize(nb::ndarray<scalar, nb::ndim<3>, nb::device::cuda> volume,
 
     std::cout << "---------- Vessel Voxelizer -----------" << std::endl;
     std::cout << "Volume: " << n_x << "x" << n_y << "x"<< n_z << std::endl;
-    std::cout << "Spacing: " << vol_spacing << std::endl;
     std::cout << "Vessels: " << n_vessels << std::endl;
     std::cout << "Blocks: " << blocks.x << ", " << blocks.y << ", "<< blocks.z << std::endl;
     std::cout << "---------------------------------------" << std::endl;
@@ -159,7 +160,7 @@ void voxelize(nb::ndarray<scalar, nb::ndim<3>, nb::device::cuda> volume,
 
     voxelize_kernel<scalar><<<blocks, threads>>>(volume.data(),
                                                  volume_start.data(),
-                                                vol_spacing,
+                                                vol_spacing.data(),
                                                 n_x, n_y, n_z,
                                                 vessels.data(),
                                                 vessel_bbox.data(),
