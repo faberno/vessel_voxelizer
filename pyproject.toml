@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "vessel_voxelizer"
-version = "0.0.3"
+version = "0.0.4"
 description = "GPU accelerated (fuzzy) voxelization of vascular structures."
 readme = "README.md"
 requires-python = ">=3.8"

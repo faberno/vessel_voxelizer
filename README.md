@@ -79,10 +79,6 @@ git clone https://github.com/faberno/vessel_voxelizer.git
 cd vessel_voxelizer
 pip install .
 ```
-2) make sure you have a cuda-capable array library installed (currently cupy and torch are supported)
-- how to install cupy: https://docs.cupy.dev/en/stable/install.html
-- how to install pytorch: https://pytorch.org/get-started/locally/#start-locally
-
 
 <!-- USAGE EXAMPLES -->
 ## Documentation
@@ -100,13 +96,13 @@ To avoid unnecessary checks of voxels that lie far away from any vessel, an init
 
 ### API
 The voxelization is run by the function `voxelize`. It requires:
-- `volume`: The volume that is written to
+- `volume_shape`: The shape of the volume that the results are written to
 - `volume_origin`: origin coordinates (x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>) of the volume  ( (x<sub>0</sub>, y<sub>0</sub>) in figure)
 - `volume_spacing`: voxel side length (d in figure)
 - `vessel_positions`: list of all vessel segments ((p<sub>0</sub><sup>0</sup>, p<sub>1</sub><sup>0</sup>), ..., (p<sub>0</sub><sup>N</sup>, p<sub>1</sub><sup>N</sup>))
 - `vessel_radii`: list of all vessel radii
 
-The array parameters should lie on the GPU, either as a `cupy.ndarray` or `torch.Tensor`.
+The array parameters should lie on the CPU as a `np.ndarray` and will automatically be moved to the GPU and back during the computation.
 
 ### Example
 For a full example, take a look at the following [notebook](example/example.ipynb).

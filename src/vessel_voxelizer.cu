@@ -129,53 +129,113 @@ __global__ void voxelize_kernel(scalar* volume,
 
 }
 
-//volume, vol_spacing, vessels, vessel_bbox, rads
 template<typename scalar>
-void voxelize(nb::ndarray<scalar, nb::ndim<3>, nb::device::cuda> volume,
-              nb::ndarray<scalar, nb::shape<3>, nb::device::cuda> volume_start,
-              nb::ndarray<scalar, nb::shape<3>, nb::device::cuda> vol_spacing,
-              nb::ndarray<scalar, nb::shape<-1, 2, 3>, nb::c_contig, nb::device::cuda> vessels,
-              nb::ndarray<scalar, nb::shape<-1, 2, 3>, nb::c_contig, nb::device::cuda> vessel_bbox,
-              nb::ndarray<scalar, nb::shape<-1>, nb::c_contig, nb::device::cuda> rads) {
+void voxelize(nb::ndarray<scalar, nb::ndim<3>, nb::c_contig, nb::device::cpu> volume,
+              nb::ndarray<scalar, nb::shape<3>, nb::c_contig, nb::device::cpu> volume_start,
+              nb::ndarray<scalar, nb::shape<3>, nb::c_contig, nb::device::cpu> vol_spacing,
+              nb::ndarray<scalar, nb::shape<-1, 2, 3>, nb::c_contig, nb::device::cpu> vessels,
+              nb::ndarray<scalar, nb::shape<-1, 2, 3>, nb::c_contig, nb::device::cpu> vessel_bbox,
+              nb::ndarray<scalar, nb::shape<-1>, nb::c_contig, nb::device::cpu> rads) {
 
-    int n_x = volume.shape(0);
-    int n_y = volume.shape(1);
-    int n_z = volume.shape(2);
+    // --- 1. Get dimensions from input arrays ---
+    size_t n_x = volume.shape(0);
+    size_t n_y = volume.shape(1);
+    size_t n_z = volume.shape(2);
+    size_t n_vessels = vessels.shape(0);
+    size_t vol_size_bytes = n_x * n_y * n_z * sizeof(scalar);
+    size_t vec3_size_bytes = 3 * sizeof(scalar);
+    size_t vessels_size_bytes = n_vessels * 2 * 3 * sizeof(scalar);
+    size_t rads_size_bytes = n_vessels * sizeof(scalar);
 
-    int n_vessels = vessels.shape(0);
 
+    // --- 2. Configure kernel launch parameters ---
     const dim3 threads(8, 8, 8);
     const dim3 blocks((n_x + threads.x - 1) / threads.x,
-                  (n_y + threads.y - 1) / threads.y,
-                  (n_z + threads.z - 1) / threads.z);
-
+                      (n_y + threads.y - 1) / threads.y,
+                      (n_z + threads.z - 1) / threads.z);
 
     std::cout << "---------- Vessel Voxelizer -----------" << std::endl;
     std::cout << "Volume: " << n_x << "x" << n_y << "x"<< n_z << std::endl;
     std::cout << "Vessels: " << n_vessels << std::endl;
-    std::cout << "Blocks: " << blocks.x << ", " << blocks.y << ", "<< blocks.z << std::endl;
+    std::cout << "Grid Dim: " << blocks.x << ", " << blocks.y << ", "<< blocks.z << std::endl;
+    std::cout << "Block Dim: " << threads.x << ", " << threads.y << ", "<< threads.z << std::endl;
     std::cout << "---------------------------------------" << std::endl;
+
+    // --- 3. Allocate memory on the GPU ---
+    scalar *d_volume, *d_volume_start, *d_vol_spacing, *d_vessels, *d_vessel_bbox, *d_rads;
+    gpuErrchk(cudaMalloc((void**)&d_volume, vol_size_bytes));
+    gpuErrchk(cudaMalloc((void**)&d_volume_start, vec3_size_bytes));
+    gpuErrchk(cudaMalloc((void**)&d_vol_spacing, vec3_size_bytes));
+    gpuErrchk(cudaMalloc((void**)&d_vessels, vessels_size_bytes));
+    gpuErrchk(cudaMalloc((void**)&d_vessel_bbox, vessels_size_bytes));
+    gpuErrchk(cudaMalloc((void**)&d_rads, rads_size_bytes));
 
     std::chrono::steady_clock::time_point time_start = std::chrono::steady_clock::now();
 
-    voxelize_kernel<scalar><<<blocks, threads>>>(volume.data(),
-                                                 volume_start.data(),
-                                                vol_spacing.data(),
-                                                n_x, n_y, n_z,
-                                                vessels.data(),
-                                                vessel_bbox.data(),
-                                                rads.data(),
-                                                n_vessels);
+    // --- 4. Copy data from Host (CPU) to Device (GPU) ---
+    gpuErrchk(cudaMemcpy(d_volume, volume.data(), vol_size_bytes, cudaMemcpyHostToDevice));
+    gpuErrchk(cudaMemcpy(d_volume_start, volume_start.data(), vec3_size_bytes, cudaMemcpyHostToDevice));
+    gpuErrchk(cudaMemcpy(d_vol_spacing, vol_spacing.data(), vec3_size_bytes, cudaMemcpyHostToDevice));
+    gpuErrchk(cudaMemcpy(d_vessels, vessels.data(), vessels_size_bytes, cudaMemcpyHostToDevice));
+    gpuErrchk(cudaMemcpy(d_vessel_bbox, vessel_bbox.data(), vessels_size_bytes, cudaMemcpyHostToDevice));
+    gpuErrchk(cudaMemcpy(d_rads, rads.data(), rads_size_bytes, cudaMemcpyHostToDevice));
 
-    gpuErrchk( cudaPeekAtLastError() );
-    gpuErrchk( cudaDeviceSynchronize() );
+    std::chrono::steady_clock::time_point time_copied_to_gpu = std::chrono::steady_clock::now();
+
+    // --- 5. Launch the CUDA kernel ---
+    voxelize_kernel<scalar><<<blocks, threads>>>(d_volume,
+                                                 d_volume_start,
+                                                 d_vol_spacing,
+                                                 n_x, n_y, n_z,
+                                                 d_vessels,
+                                                 d_vessel_bbox,
+                                                 d_rads,
+                                                 n_vessels);
+
+    // Check for any errors launched from the kernel
+    gpuErrchk(cudaPeekAtLastError());
+    // Block until the device has completed all preceding tasks
+    gpuErrchk(cudaDeviceSynchronize());
+
+    std::chrono::steady_clock::time_point time_kernel_end = std::chrono::steady_clock::now();
+
+    // --- 6. Copy result data from Device (GPU) to Host (CPU) ---
+    gpuErrchk(cudaMemcpy(volume.data(), d_volume, vol_size_bytes, cudaMemcpyDeviceToHost));
+
     std::chrono::steady_clock::time_point time_end = std::chrono::steady_clock::now();
 
-    std::cout << "Finished! Kernel Time: " << (float) std::chrono::duration_cast<std::chrono::milliseconds>(time_end - time_start).count() / 1000 << "s" << std::endl;
+    // --- 7. Free allocated GPU memory ---
+    gpuErrchk(cudaFree(d_volume));
+    gpuErrchk(cudaFree(d_volume_start));
+    gpuErrchk(cudaFree(d_vol_spacing));
+    gpuErrchk(cudaFree(d_vessels));
+    gpuErrchk(cudaFree(d_vessel_bbox));
+    gpuErrchk(cudaFree(d_rads));
+
+    // --- 8. Print timing information ---
+    float h2d_ms = (float) std::chrono::duration_cast<std::chrono::microseconds>(time_copied_to_gpu - time_start).count() / 1000;
+    float kernel_ms = (float) std::chrono::duration_cast<std::chrono::microseconds>(time_kernel_end - time_copied_to_gpu).count() / 1000;
+    float d2h_ms = (float) std::chrono::duration_cast<std::chrono::microseconds>(time_end - time_kernel_end).count() / 1000;
+    float total_ms = (float) std::chrono::duration_cast<std::chrono::microseconds>(time_end - time_start).count() / 1000;
+
+    std::cout << "Finished! " << std::endl;
+    std::cout << "  - HtoD Transfer Time: " << h2d_ms << " ms" << std::endl;
+    std::cout << "  - Kernel Time:        " << kernel_ms << " ms" << std::endl;
+    std::cout << "  - DtoH Transfer Time: " << d2h_ms << " ms" << std::endl;
+    std::cout << "  - Total Time:         " << total_ms << " ms" << std::endl;
 }
 
 
+// --- Nanobind module definition ---
 NB_MODULE(_vessel_vox, m) {
-    m.def("__voxelize", &voxelize<float>);
-//     m.def("voxelize", &voxelize<double>);
+    m.doc() = "A CUDA-accelerated vessel voxelizer for Python.";
+    m.def("__voxelize", &voxelize<float>,
+        "volume"_a.noconvert(),
+        "volume_start"_a.noconvert(),
+        "vol_spacing"_a.noconvert(),
+        "vessels"_a.noconvert(),
+        "vessel_bbox"_a.noconvert(),
+        "rads"_a.noconvert(),
+        "Performs vessel voxelization on the GPU."
+    );
 }
